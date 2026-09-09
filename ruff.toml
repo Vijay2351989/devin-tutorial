@@ -1,7 +1,6 @@
-[lint]
 line-length = 88
+target-version = "py38"
+
+[lint]
 select = ["E", "F", "I", "N", "W"]
 ignore = []
-
-[format]
-line-length = 88

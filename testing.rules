@@ -1,0 +1,46 @@
+# Testing Rules
+
+Scope: tests for this repository. See [AGENT.md](AGENT.md) for commands and
+[docs/features/api-endpoints.md](docs/features/api-endpoints.md) for the
+endpoint contracts under test.
+
+## Coverage
+
+- Every endpoint in `app/main.py` must have at least one test in `tests/`.
+- Adding or changing an endpoint requires adding or updating its test in the
+  same change, including the response fields callers depend on.
+
+## Style
+
+- Tests are async: use `httpx.AsyncClient` with `@pytest.mark.asyncio`, matching
+  `tests/test_main.py`:
+
+  ```python
+  @pytest.mark.asyncio
+  async def test_health_check():
+      async with AsyncClient(app=app, base_url="http://test") as client:
+          response = await client.get("/health")
+          assert response.status_code == 200
+  ```
+
+- Assert on status code and on the specific response keys/values.
+- Never assert on real secret values — assert on presence and shape only.
+
+## Running tests
+
+Run before every commit:
+
+```bash
+pytest
+pytest --cov=app
+```
+
+## Configuration
+
+Match the pytest config in `pyproject.toml` — do not duplicate or override it
+ad hoc:
+
+- `testpaths = ["tests"]`
+- `python_files = ["test_*.py"]`, `python_classes = ["Test*"]`,
+  `python_functions = ["test_*"]`
+- `asyncio_mode = "auto"`

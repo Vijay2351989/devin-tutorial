@@ -1,0 +1,38 @@
+# Coding Standards
+
+Scope: Python code in this repository. See [AGENT.md](AGENT.md) for commands,
+[testing.rules](testing.rules) for tests, and [security.rules](security.rules)
+for secret handling.
+
+## Linting and formatting
+
+- ruff is authoritative: `line-length = 88`, rules `["E", "F", "I", "N", "W"]`,
+  `target-version = "py38"` (`pyproject.toml` and `ruff.toml`).
+- black is configured with the same `line-length = 88` and `py38` target.
+- Run `python scripts/lint.py` (ruff check, ruff format --check, mypy `app/`)
+  before committing; auto-fix formatting with `ruff format .`.
+- Keep imports sorted (ruff `I`) and follow ruff `N` naming: `snake_case` for
+  functions and variables, `PascalCase` for classes.
+
+## Typing
+
+- mypy runs with `disallow_untyped_defs = true`, `warn_return_any = true`,
+  `warn_unused_configs = true`, `python_version = "3.8"`.
+- Annotate every function's parameters and return type, including test helpers
+  and endpoint handlers.
+- Stay Python 3.8 compatible in `app/`: use `Optional[str]` from `typing`
+  rather than `str | None`.
+
+## Docstrings
+
+- Follow the existing style: a module-level docstring at the top of each module
+  and a one-line `"""..."""` docstring on every public function, class, and
+  endpoint handler, as in `app/main.py`.
+
+## API code
+
+- Prefer Pydantic response models over raw dicts for new endpoints, following
+  `MessageResponse` in `app/main.py`, and use the model as the handler's return
+  annotation.
+- Read configuration and secrets via `os.getenv(...)` with a safe default where
+  one exists (e.g. `os.getenv("ENVIRONMENT", "development")`).

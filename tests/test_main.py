@@ -8,7 +8,7 @@ from app.main import app
 
 
 @pytest.mark.asyncio
-async def test_root_endpoint():
+async def test_root_endpoint() -> None:
     """Test the root endpoint returns hello world message."""
     async with AsyncClient(app=app, base_url="http://test") as client:
         response = await client.get("/")
@@ -21,7 +21,7 @@ async def test_root_endpoint():
 
 
 @pytest.mark.asyncio
-async def test_health_check():
+async def test_health_check() -> None:
     """Test the health check endpoint."""
     async with AsyncClient(app=app, base_url="http://test") as client:
         response = await client.get("/health")
@@ -32,7 +32,7 @@ async def test_health_check():
 
 
 @pytest.mark.asyncio
-async def test_read_item():
+async def test_read_item() -> None:
     """Test the read item endpoint with path parameters."""
     async with AsyncClient(app=app, base_url="http://test") as client:
         response = await client.get("/items/42")
@@ -43,7 +43,7 @@ async def test_read_item():
 
 
 @pytest.mark.asyncio
-async def test_read_item_with_query():
+async def test_read_item_with_query() -> None:
     """Test the read item endpoint with query parameters."""
     async with AsyncClient(app=app, base_url="http://test") as client:
         response = await client.get("/items/42?q=test")
@@ -54,7 +54,7 @@ async def test_read_item_with_query():
 
 
 @pytest.mark.asyncio
-async def test_secrets_status():
+async def test_secrets_status() -> None:
     """Test the secrets status endpoint."""
     async with AsyncClient(app=app, base_url="http://test") as client:
         response = await client.get("/secrets-status")
