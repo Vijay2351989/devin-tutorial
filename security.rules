@@ -1,0 +1,35 @@
+# Security Rules
+
+Scope: secret handling in this repository. See
+[docs/features/secret-management.md](docs/features/secret-management.md) for the
+full flow and [AGENT.md](AGENT.md) for project context.
+
+## Never commit secret values
+
+- No real values for `API_KEY`, `DATABASE_URL`, or any other credential in
+  source, tests, docs, fixtures, or commit messages.
+- `.env.example` documents variable names only; keep it value-free.
+- `.env` is listed in `.gitignore` and must stay untracked. The `initialize`
+  step in `environment.yaml` generates a minimal `.env` containing only
+  `ENVIRONMENT`.
+
+## Secrets come from organization blueprints
+
+- `API_KEY` and `DATABASE_URL` are injected by Devin Cloud organization
+  blueprints and re-exported in the `initialize` and `maintenance` sections of
+  `environment.yaml`.
+- Add new secrets at the organization level and reference them by name in
+  `environment.yaml` (`export NEW_SECRET=$NEW_SECRET`); never hard-code a
+  fallback value.
+- Read secrets at runtime with `os.getenv(...)` only.
+
+## Never expose secret values
+
+- Report presence, length, and source — not the value. Follow the existing
+  masking pattern in `app/main.py`:
+  - `/` returns `api_key_status` as `"configured (length: N)"` or
+    `"not configured"`.
+  - `/secrets-status` returns `status`, `length`, and `source` per secret.
+- Do not log, print, or return secret values, and do not include them in error
+  messages or exception traces.
+- Never echo secrets in shell commands or CI output.
