@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Exec(ls)",
+      "Exec(Get-ChildItem)",
+      "Exec(New-Item)",
+      "Exec(Move-Item)",
+      "Exec(Remove-Item)",
+      "Exec(pip install)",
+      "Exec(python)"
+    ]
+  }
+}

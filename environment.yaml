@@ -1,0 +1,122 @@
+# Devin Environment Setup Configuration
+# This file defines how to set up the project environment in Devin Cloud
+
+initialize:
+  # One-time setup commands that run when the environment is first created
+  - run: |
+      # Install Python dependencies
+      pip install -r requirements.txt
+      pip install -r requirements-dev.txt
+      
+      # Set environment variables from organization secrets
+      # These secrets are automatically injected by Devin Cloud
+      export API_KEY=$API_KEY
+      export DATABASE_URL=$DATABASE_URL
+      export ENVIRONMENT=${ENVIRONMENT:-development}
+      
+      # Create minimal .env file for local development reference
+      # (organization secrets take precedence)
+      cat > .env << EOF
+      ENVIRONMENT=${ENVIRONMENT:-development}
+      # API_KEY and DATABASE_URL are provided by organization blueprint
+      EOF
+
+maintenance:
+  # Commands that run on every session start to ensure environment is ready
+  - run: |
+      # Verify dependencies are installed
+      pip install -q -r requirements.txt
+      pip install -q -r requirements-dev.txt
+      
+      # Ensure organization secrets are available in environment
+      export API_KEY=$API_KEY
+      export DATABASE_URL=$DATABASE_URL
+      export ENVIRONMENT=${ENVIRONMENT:-development}
+
+knowledge:
+  # Knowledge sections that help Devin understand how to work with this project
+  
+  - name: lint
+    contents: |
+      # Run linting checks
+      python scripts/lint.py
+      
+      # Or run individual tools:
+      # ruff check .           # Check code style
+      # ruff format --check .   # Check formatting
+      # mypy app/               # Type checking
+      
+      # To auto-format code:
+      # ruff format .
+      # Or: python scripts/format.bat (Windows)
+
+  - name: test
+    contents: |
+      # Run all tests
+      pytest
+      
+      # Run tests with coverage
+      pytest --cov=app --cov-report=html
+      
+      # Run specific test file
+      pytest tests/test_main.py
+      
+      # Run tests with verbose output
+      pytest -v
+
+  - name: startup
+    contents: |
+      # Start the FastAPI development server
+      uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+      
+      # The server will be available at http://localhost:8000
+      # API documentation available at http://localhost:8000/docs
+
+  - name: project_structure
+    contents: |
+      # Project Structure:
+      # app/
+      #   main.py           # FastAPI application
+      #   __init__.py       # Package initialization
+      # tests/
+      #   test_main.py      # Test cases for the app
+      #   __init__.py       # Tests package
+      # scripts/
+      #   lint.py           # Cross-platform linting script
+      #   lint.bat          # Windows linting script
+      #   format.bat        # Windows formatting script
+      # requirements.txt     # Production dependencies
+      # requirements-dev.txt # Development dependencies
+      # pyproject.toml      # Project configuration
+      # .env.example        # Environment variables template
+      # .env                # Actual environment variables (not in git)
+      # environment.yaml    # Devin environment setup configuration
+
+  - name: dependencies
+    contents: |
+      # Key dependencies:
+      # - fastapi: Modern web framework for building APIs
+      # - uvicorn: ASGI server for running FastAPI
+      # - pydantic: Data validation using Python type annotations
+      # - python-dotenv: Load environment variables from .env files
+      # - pytest: Testing framework
+      # - httpx: Async HTTP client for testing
+      # - ruff: Fast Python linter and formatter
+      # - mypy: Static type checker for Python
+
+  - name: secrets
+    contents: |
+      # This project uses organization-level secrets from Devin Cloud.
+      # The following secrets are configured at the organization level:
+      # - API_KEY: Provided by organization blueprint
+      # - DATABASE_URL: Provided by organization blueprint
+      # - ENVIRONMENT: Environment name (defaults to development)
+      #
+      # These secrets are automatically injected into the environment
+      # and referenced in the initialize/maintenance sections as $API_KEY, etc.
+      #
+      # To test organization secrets, visit /secrets-status endpoint
+      # The root endpoint (/) also shows API_KEY configuration status
+      #
+      # NEVER store actual secret values in this repository!
+      # All secrets are managed at the organization level for security.
