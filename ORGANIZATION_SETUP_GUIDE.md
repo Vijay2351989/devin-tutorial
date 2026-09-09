@@ -1,6 +1,6 @@
-# Organization Blueprint and Secret Setup Guide
+# Organization Blueprint and Secret Setup Guide (Windows)
 
-This guide provides step-by-step instructions for setting up organization blueprints and secrets in Devin Cloud for this FastAPI example project.
+This guide provides step-by-step instructions for setting up organization blueprints and secrets in Devin Cloud for this FastAPI example project on Windows machines.
 
 ## Overview
 
@@ -15,6 +15,8 @@ This project demonstrates how to:
 - Devin CLI installed and authenticated
 - Organization admin access (for creating blueprints and secrets)
 - This repository cloned and pushed to your git remote
+- PowerShell (Windows Terminal recommended)
+- Git for Windows
 
 ## Step 1: Create Organization Secrets
 

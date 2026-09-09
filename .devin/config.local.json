@@ -7,7 +7,9 @@
       "Exec(Move-Item)",
       "Exec(Remove-Item)",
       "Exec(pip install)",
-      "Exec(python)"
+      "Exec(python)",
+      "Exec(uv)",
+      "Exec(python3)"
     ]
   }
 }
