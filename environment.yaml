@@ -11,7 +11,8 @@ initialize:
       # Set environment variables from organization secrets
       # These secrets are automatically injected by Devin Cloud
       export API_KEY=$API_KEY
-      export DATABASE_URL=$DATABASE_URL
+      # DATABASE_URL is a SQLAlchemy URL; falls back to sqlite:///./products.db
+      export DATABASE_URL=${DATABASE_URL:-sqlite:///./products.db}
       export ENVIRONMENT=${ENVIRONMENT:-development}
       
       # Create minimal .env file for local development reference
@@ -30,7 +31,7 @@ maintenance:
       
       # Ensure organization secrets are available in environment
       export API_KEY=$API_KEY
-      export DATABASE_URL=$DATABASE_URL
+      export DATABASE_URL=${DATABASE_URL:-sqlite:///./products.db}
       export ENVIRONMENT=${ENVIRONMENT:-development}
 
 knowledge:
@@ -77,6 +78,9 @@ knowledge:
       # Project Structure:
       # app/
       #   main.py           # FastAPI application
+      #   database.py       # SQLAlchemy engine, session and init_db
+      #   models.py         # ORM models (Product)
+      #   schemas.py        # Pydantic request/response models
       #   __init__.py       # Package initialization
       # tests/
       #   test_main.py      # Test cases for the app
@@ -99,6 +103,7 @@ knowledge:
       # - uvicorn: ASGI server for running FastAPI
       # - pydantic: Data validation using Python type annotations
       # - python-dotenv: Load environment variables from .env files
+      # - sqlalchemy: ORM and database access (SQLite by default)
       # - pytest: Testing framework
       # - httpx: Async HTTP client for testing
       # - ruff: Fast Python linter and formatter
@@ -110,6 +115,7 @@ knowledge:
       # The following secrets are configured at the organization level:
       # - API_KEY: Provided by organization blueprint
       # - DATABASE_URL: Provided by organization blueprint
+      #   (SQLAlchemy URL; defaults to sqlite:///./products.db when unset)
       # - ENVIRONMENT: Environment name (defaults to development)
       #
       # These secrets are automatically injected into the environment

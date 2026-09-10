@@ -3,14 +3,17 @@ Tests for FastAPI Hello World Application
 """
 
 import pytest
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
+
 from app.main import app
 
 
 @pytest.mark.asyncio
 async def test_root_endpoint() -> None:
     """Test the root endpoint returns hello world message."""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         response = await client.get("/")
         assert response.status_code == 200
         data = response.json()
@@ -23,7 +26,9 @@ async def test_root_endpoint() -> None:
 @pytest.mark.asyncio
 async def test_health_check() -> None:
     """Test the health check endpoint."""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         response = await client.get("/health")
         assert response.status_code == 200
         data = response.json()
@@ -34,7 +39,9 @@ async def test_health_check() -> None:
 @pytest.mark.asyncio
 async def test_read_item() -> None:
     """Test the read item endpoint with path parameters."""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         response = await client.get("/items/42")
         assert response.status_code == 200
         data = response.json()
@@ -45,7 +52,9 @@ async def test_read_item() -> None:
 @pytest.mark.asyncio
 async def test_read_item_with_query() -> None:
     """Test the read item endpoint with query parameters."""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         response = await client.get("/items/42?q=test")
         assert response.status_code == 200
         data = response.json()
@@ -56,7 +65,9 @@ async def test_read_item_with_query() -> None:
 @pytest.mark.asyncio
 async def test_secrets_status() -> None:
     """Test the secrets status endpoint."""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         response = await client.get("/secrets-status")
         assert response.status_code == 200
         data = response.json()
