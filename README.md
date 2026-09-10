@@ -8,10 +8,16 @@ A comprehensive FastAPI example project demonstrating best practices for Python 
 .
 ├── app/
 │   ├── __init__.py
-│   └── main.py              # FastAPI application with organization secret support
+│   ├── main.py              # FastAPI application with organization secret support
+│   ├── database.py          # SQLAlchemy engine, session dependency, init_db
+│   ├── models.py            # ORM models (Product)
+│   └── schemas.py           # Pydantic request/response models
 ├── tests/
 │   ├── __init__.py
-│   └── test_main.py         # Test cases including secret functionality
+│   ├── conftest.py          # In-memory SQLite fixtures
+│   ├── test_main.py         # Test cases including secret functionality
+│   ├── test_database.py     # Database + model tests
+│   └── test_products.py     # POST /api/products tests
 ├── scripts/
 │   ├── lint.py              # Cross-platform linting
 │   ├── lint.bat             # Windows linting
@@ -192,10 +198,38 @@ For local development without organization access:
 
 - `GET /items/{item_id}` - Example with path and query parameters
 
+- `POST /api/products` - Create a product (returns `201`)
+  ```bash
+  curl -X POST http://localhost:8000/api/products \
+    -H 'Content-Type: application/json' \
+    -d '{"name": "Widget", "description": "A useful widget", "price": 9.99}'
+  ```
+  ```json
+  {
+    "id": 1,
+    "name": "Widget",
+    "description": "A useful widget",
+    "price": 9.99,
+    "created_at": "2024-01-01T12:00:00",
+    "updated_at": null
+  }
+  ```
+  Validation failures (missing `name`, `price < 0`, wrong types) return `422`;
+  database failures return `500`. See [docs/features/database.md](docs/features/database.md).
+
+## Database
+
+The app persists data with SQLAlchemy 2.x. The connection string comes from
+`DATABASE_URL` and defaults to a local SQLite file, `sqlite:///./products.db`
+(git-ignored). Tables and a `schema_version` marker are created automatically
+on startup by `app.database.init_db`. To reset the database, delete the
+SQLite file. Details: [docs/features/database.md](docs/features/database.md).
+
 ## Configuration
 
 - **Framework**: FastAPI 0.104+
 - **Server**: Uvicorn
+- **Database**: SQLAlchemy 2.x (SQLite by default via `DATABASE_URL`)
 - **Testing**: Pytest with httpx
 - **Linting**: Ruff (modern replacement for flake8/black)
 - **Type Checking**: MyPy

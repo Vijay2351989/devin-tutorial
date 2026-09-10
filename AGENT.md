@@ -13,6 +13,7 @@ show and verify that flow.
 ## Tech Stack
 
 - **Runtime:** Python (`requires-python >= 3.8`), FastAPI, Pydantic v2, Uvicorn (`uvicorn[standard]`), python-dotenv
+- **Database:** SQLAlchemy 2.x, SQLite by default (`DATABASE_URL`, falls back to `sqlite:///./products.db`)
 - **Testing:** pytest, pytest-asyncio, httpx
 - **Quality:** ruff (lint + format), black, mypy
 - **Environment:** `environment.yaml` (Devin Cloud blueprint: `initialize`, `maintenance`, `knowledge`)
@@ -23,10 +24,16 @@ show and verify that flow.
 .
 ├── app/
 │   ├── __init__.py
-│   └── main.py                     # FastAPI app: MessageResponse + 4 GET endpoints
+│   ├── main.py                     # FastAPI app: 4 GET endpoints + POST /api/products
+│   ├── database.py                 # SQLAlchemy engine, get_db dependency, init_db
+│   ├── models.py                   # ORM models (Product)
+│   └── schemas.py                  # Pydantic request/response models
 ├── tests/
 │   ├── __init__.py
-│   └── test_main.py                # httpx.AsyncClient tests for every endpoint
+│   ├── conftest.py                 # In-memory SQLite fixtures + test client
+│   ├── test_main.py                # httpx.AsyncClient tests for GET endpoints
+│   ├── test_database.py            # Database and model tests
+│   └── test_products.py            # POST /api/products tests
 ├── scripts/
 │   ├── lint.py                     # Cross-platform lint entry point
 │   ├── lint.sh                     # Shell linting
@@ -34,7 +41,8 @@ show and verify that flow.
 │   └── format.bat                  # Windows formatting
 ├── docs/features/
 │   ├── secret-management.md        # Organization secret flow deep dive
-│   └── api-endpoints.md            # Endpoint reference
+│   ├── api-endpoints.md            # Endpoint reference
+│   └── database.md                 # SQLAlchemy/SQLite setup and products API
 ├── environment.yaml                # Devin environment setup + knowledge sections
 ├── pyproject.toml                  # ruff / black / mypy / pytest configuration
 ├── ruff.toml                       # Standalone ruff config (mirrors pyproject)
@@ -96,6 +104,7 @@ Feature docs:
 
 - [docs/features/secret-management.md](docs/features/secret-management.md)
 - [docs/features/api-endpoints.md](docs/features/api-endpoints.md)
+- [docs/features/database.md](docs/features/database.md)
 
 Guides:
 

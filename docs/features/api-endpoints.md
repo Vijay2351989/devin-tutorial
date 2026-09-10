@@ -97,3 +97,10 @@ Parameters: none.
 
 Full field contract: [secret-management.md](secret-management.md). Secret values
 are never returned.
+
+## `POST /api/products`
+
+Creates a product in the SQLite database and returns it with `201 Created`.
+Request model `ProductCreate` (`name`, optional `description`, `price >= 0`);
+response model `ProductResponse`. Validation errors return `422`, database
+failures `500`. Full contract: [database.md](database.md).
