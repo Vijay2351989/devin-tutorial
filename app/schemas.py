@@ -29,7 +29,9 @@ class ProductCreate(BaseModel):
     description: Optional[str] = Field(
         default=None, description="Optional product description."
     )
-    price: float = Field(..., ge=0, description="Non-negative product price.")
+    price: float = Field(
+        ..., ge=0, strict=True, description="Non-negative numeric product price."
+    )
 
 
 class ProductResponse(BaseModel):

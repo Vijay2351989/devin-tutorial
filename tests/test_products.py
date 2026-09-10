@@ -81,8 +81,12 @@ async def test_create_product_negative_price(client: AsyncClient) -> None:
 @pytest.mark.asyncio
 async def test_create_product_invalid_price_type(client: AsyncClient) -> None:
     """A non-numeric price is rejected with 422."""
-    response = await client.post("/api/products", json={"name": "Bad", "price": "free"})
-    assert response.status_code == 422
+    for bad_price in ("free", "9.99", True):
+        response = await client.post(
+            "/api/products", json={"name": "Bad", "price": bad_price}
+        )
+        assert response.status_code == 422
+        assert any(err["loc"][-1] == "price" for err in response.json()["detail"])
 
 
 @pytest.mark.asyncio
